@@ -128,7 +128,21 @@ set(SourceFiles
     Source/TestUtilities.cpp
     Source/Validator.cpp)
 
-target_sources(pluginval PRIVATE ${SourceFiles})
+# 1) Resolve the directory above your project
+get_filename_component(PLUGINVAL_TEST_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../Tests/Pluginval.tests"
+    REALPATH
+)
+
+message(STATUS "Pluginval tests dir: ${PLUGINVAL_TEST_DIR}")
+
+# 2) Glob all files from there (recursively)
+file(GLOB_RECURSE PrivateSourceFiles
+    CONFIGURE_DEPENDS
+    "${PLUGINVAL_TEST_DIR}/*"
+)
+
+target_sources(pluginval PRIVATE ${SourceFiles} ${PrivateSourceFiles})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source PREFIX Source FILES ${SourceFiles})
 
 # Add VST3 validator runner sources to pluginval (extracts embedded binary at runtime)
