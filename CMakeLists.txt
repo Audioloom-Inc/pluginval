@@ -3,8 +3,15 @@ cmake_minimum_required(VERSION 3.15)
 file(STRINGS VERSION CURRENT_VERSION LIMIT_COUNT 1)
 project(pluginval VERSION ${CURRENT_VERSION})
 
-# Just compliing pluginval
-if (pluginval_IS_TOP_LEVEL)
+if (DEFINED VERSION_FILE)
+    message (STATUS "Using custom version file: ${VERSION_FILE}")
+
+    # use a custom juce ref depending on custom input version file
+    include(cmake/ProjectVersion.cmake)
+    include(cmake/GetJuceRef.cmake)
+    read_juce_ref(JUCE_REF ${VERSION_FILE})
+elseif (pluginval_IS_TOP_LEVEL)
+    # # Just compiling pluginval
     if (APPLE)
         # Target OS versions down to 10.11
         set (CMAKE_OSX_DEPLOYMENT_TARGET "10.11" CACHE INTERNAL "")
